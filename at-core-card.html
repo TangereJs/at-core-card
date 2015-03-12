@@ -3,105 +3,160 @@ Copyright 2013 The Polymer Authors. All rights reserved.
 Use of this source code is governed by a BSD-style
 license that can be found in the LICENSE file.
 -->
+<link rel="import" href="../polymer/polymer.html">
+<dom-module id="at-core-card" on-trackstart="trackStart" on-track="track" on-trackend="trackEnd" on-flick="flick">
+    <style>
+        :host {
+          background-color: #fff;
+          border-radius: 2px;
+          box-shadow: rgba(0, 0, 0, 0.098) 0px 2px 4px, rgba(0, 0, 0, 0.098) 0px 0px 3px;
+          /* transition */
+          -webkit-transition: all 0.30s ease-out;
+          transition: all 0.30s ease-out;
+        }
 
-<polymer-element name="at-core-card" attributes="swipeable noCurve sort" on-trackstart="{{trackStart}}" on-track="{{track}}" on-trackend="{{trackEnd}}" on-flick="{{flick}}">
-  <template>
-    <link rel="stylesheet" href="at-core-card.css">
-    <content></content>
-  </template>
-  <script>
-      Polymer('at-core-card', {
-          /**
-           * If true, the card can be swiped.
-           *
-           * @attribute swipeable
-           * @type boolean
-           * @default false
-           */
-          removing: true,
-          swipeable: false,
-          sort: "",
-          noCurve: false,
-          offsetRatio: 0.2,
-          widthRatio: 1.2,
-          ready: function () {
+        :host(.dark-shadow:host) {
+          box-shadow: rgba(0, 0, 0, 0.14902) 0px 2px 4px, rgba(0, 0, 0, 0.14902) 0px 0px 3px;
+        }
+
+        :host(.dragging:host) {
+          -webkit-transition: none;
+          transition: none;
+        }
+    </style>
+    <template>
+        <content></content>
+    </template>
+</dom-module>
+<script>
+  Polymer({
+      is: "at-core-card",
+      /**
+       * If true, the card can be swiped.
+       *
+       * @attribute swipeable
+       * @type boolean
+       * @default false
+       */
+      
+      properties: {
+        removing: {
+                type: Boolean,
+                value: true
+            },
+          swipeable: {
+            type: Boolean,
+            observer: 'swipeableChanged',
+            value: false
+          },
+          noCurve: {
+            type: Boolean,
+            value: false
+          },
+          sort: {
+            type: String,
+            value: ""
+            },
+          offsetRatio: {
+            type: Number,
+            value: 0.2
+          },
+          widthRatio: {
+            type: Number,
+            value: 1.2
+          }
+      },
+      ready: function () {          
+          //Quickfix that needs to be replaced by commented code after property->observer issue is resolved
+          //this.setAttribute('touch-action', 'pan-y');          
+          //this.transitionEndListener = this.transitionEnd.bind(this);
+          
+          if(!this.transitionEndListener)
+          {
               this.setAttribute('touch-action', 'pan-y');
               this.transitionEndListener = this.transitionEnd.bind(this);
-          },
-          leftView: function () {
-              if (this.removing) {
-                  this.removeListeners();
-              }
-          },
-          addListeners: function () {
-              this.addEventListener('webkitTransitionEnd', this.transitionEndListener);
-              this.addEventListener('transitionend', this.transitionEndListener);
-          },
-          removeListeners: function () {
-              this.removeEventListener('webkitTransitionEnd', this.transitionEndListener);
-              this.removeEventListener('transitionend', this.transitionEndListener);
-          },
-          swipeableChanged: function () {
-              if (this.swipeable) {
-                  this.addListeners();
-              } else {
-                  this.removeListeners();
-              }
-          },
-          swipe: function (x) {
-              var s = this.style;
-              var d = x > 0 ? 1 : -1;
-              var w = this.w * this.widthRatio;
-              var x1 = Math.max(0, Math.abs(x) - this.w * this.offsetRatio);
-              var r = Math.max(0, (w - x1) / w);
-              var y = w - Math.sqrt(w * w - x1 * x1);
-              var deg = (1 - r) * d * 60//90
-              s.opacity = r;
-              var translate = 'translate3d(' + x + 'px,' + (this.noCurve ? 0 : y) + 'px,0)';
-              var rotate = 'rotate(' + deg + 'deg)';
-              s.webkitTransform = s.mozTransform = s.msTransform = s.transform = translate + (this.noCurve ? '' : ' ' + rotate);
-          },
-          trackStart: function (e) {
-              if (this.swipeable) {
-                  e.preventTap();
-                  this.w = this.offsetWidth;
-                  this.classList.add('dragging');
-              }
-          },
-          track: function (e) {
-              if (this.swipeable) {
-                  this.swipe(e.dx);
-              }
-          },
-          trackEnd: function (e) {
-              if (this.swipeable) {
-                  this.swipeEnd(Math.abs(e.dx) > this.w / 2 && e.dx * e.xDirection > 0,
-                      e.dx > 0);
-              }
-          },
-          flick: function (e) {
-              if (this.swipeable && !this.away) {
-                  var v = e.xVelocity;
-                  this.swipeEnd(Math.abs(v) > 2, v > 0);
-              }
-          },
-          swipeEnd: function (away, dir) {
-              this.classList.remove('dragging');
-              this.away = away;
-              if (away) {
-                  this.direction = dir ? "right" : "left";
-                  var w = this.w * this.widthRatio;
-                  this.swipe(dir ? w : -w);
-              } else {
-                  this.swipe(0);
-              }
-          },
-          transitionEnd: function (e) {
-              if (this.away) {
-                  this.removing = true;
-                  this.fire('at-core-card-swipe-away', { cardId: this.id, dir: this.direction });
-              }
           }
-      });
-  </script>
-</polymer-element>
+      },
+      leftView: function () {
+          if (this.removing) {
+              this.removeListeners();
+          }
+      },
+      addListeners: function () {
+          this.addEventListener('webkitTransitionEnd', this.transitionEndListener);
+          this.addEventListener('transitionend', this.transitionEndListener);
+      },
+      removeListeners: function () {
+          this.removeEventListener('webkitTransitionEnd', this.transitionEndListener);
+          this.removeEventListener('transitionend', this.transitionEndListener);
+      },
+      swipeableChanged: function () {
+          //Quickfix that needs to be removed after property->observer issue is resolved
+          if(!this.transitionEndListener)
+          {
+              this.setAttribute('touch-action', 'pan-y');
+              this.transitionEndListener = this.transitionEnd.bind(this);
+          }
+          
+          if (this.swipeable) {
+              this.addListeners();
+          } else {
+              this.removeListeners();
+          }
+      },
+      swipe: function (x) {
+          var s = this.style;
+          var d = x > 0 ? 1 : -1;
+          var w = this.w * this.widthRatio;
+          var x1 = Math.max(0, Math.abs(x) - this.w * this.offsetRatio);
+          var r = Math.max(0, (w - x1) / w);
+          var y = w - Math.sqrt(w * w - x1 * x1);
+          var deg = (1 - r) * d * 60//90
+          s.opacity = r;
+          var translate = 'translate3d(' + x + 'px,' + (this.noCurve ? 0 : y) + 'px,0)';
+          var rotate = 'rotate(' + deg + 'deg)';
+          s.webkitTransform = s.mozTransform = s.msTransform = s.transform = translate + (this.noCurve ? '' : ' ' + rotate);
+      },
+      trackStart: function (e) {
+          if (this.swipeable) {
+              e.preventTap();
+              this.w = this.offsetWidth;
+              this.classList.add('dragging');
+          }
+      },
+      track: function (e) {
+          if (this.swipeable) {
+              this.swipe(e.dx);
+          }
+      },
+      trackEnd: function (e) {
+          if (this.swipeable) {
+              this.swipeEnd(Math.abs(e.dx) > this.w / 2 && e.dx * e.xDirection > 0,
+                  e.dx > 0);
+          }
+      },
+      flick: function (e) {
+          if (this.swipeable && !this.away) {
+              var v = e.xVelocity;
+              this.swipeEnd(Math.abs(v) > 2, v > 0);
+          }
+      },
+      swipeEnd: function (away, dir) {
+          this.classList.remove('dragging');
+          this.away = away;
+          if (away) {
+              this.direction = dir ? "right" : "left";
+              var w = this.w * this.widthRatio;
+              this.swipe(dir ? w : -w);
+          } else {
+              this.swipe(0);
+          }
+      },
+      transitionEnd: function (e) {
+          if (this.away) {
+              this.removing = true;
+              this.fire('at-core-card-swipe-away', { cardId: this.id, dir: this.direction });
+          }
+      }
+  });
+</script>

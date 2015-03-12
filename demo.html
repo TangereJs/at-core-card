@@ -7,8 +7,8 @@ license that can be found in the LICENSE file.
 <html>
   <head>
     <title>Cards</title>
-      <script src="../webcomponentsjs/webcomponents.js"></script>
-    <link rel="import" href="polymer-ui-card.html">
+    <script src="../webcomponentsjs/webcomponents.js"></script>
+    <link rel="import" href="at-core-card.html">
     <style>
       #cards {
         margin: 0 auto;
@@ -18,7 +18,7 @@ license that can be found in the LICENSE file.
         -moz-user-select: none;
       }
       
-      polymer-ui-card {
+      at-core-card {
         display: block;
         height: 200px;
         width: 240px;
@@ -27,19 +27,19 @@ license that can be found in the LICENSE file.
       }
     </style>
   </head>
-  <body unresolved>
+  <body>
     <div id="cards">
-      <polymer-ui-card swipeable>Swipe Me!</polymer-ui-card>
-      <polymer-ui-card swipeable>Swipe Me!</polymer-ui-card>
-      <polymer-ui-card></polymer-ui-card>
-      <polymer-ui-card swipeable>Swipe Me!</polymer-ui-card>
-      <polymer-ui-card></polymer-ui-card>
+      <at-core-card swipeable="true">Swipe Me!</at-core-card>
+      <at-core-card swipeable="true">Swipe Me!</at-core-card>
+      <at-core-card></at-core-card>
+      <at-core-card swipeable="true">Swipe Me!</at-core-card>
+      <at-core-card></at-core-card>
     </div>
     
     <script>
       document.addEventListener('polymer-ready', function() {
         document.querySelector('#cards').addEventListener(
-          'polymer-card-swipe-away', function(e) {
+          'at-core-card-swipe-away', function(e) {
             e.target.parentNode.removeChild(e.target);
           });
       })
