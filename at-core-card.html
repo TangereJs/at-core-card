@@ -4,7 +4,8 @@ Use of this source code is governed by a BSD-style
 license that can be found in the LICENSE file.
 -->
 <link rel="import" href="../polymer/polymer.html">
-<dom-module id="at-core-card" on-trackstart="trackStart" on-track="track" on-trackend="trackEnd" on-flick="flick">
+<!--<link rel="import" href="../at-core-theme/at-core-theme.html">-->
+<dom-module id="at-core-card" on-trackstart="{{trackStart}}" on-track="{{track}}" on-trackend="{{trackEnd}}" on-flick="{{flick}}">
     <style>
         :host {
           background-color: #fff;
@@ -25,6 +26,7 @@ license that can be found in the LICENSE file.
         }
     </style>
     <template>
+        <!--<at-core-theme></at-core-theme>-->
         <content></content>
     </template>
 </dom-module>
