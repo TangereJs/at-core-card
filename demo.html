@@ -39,12 +39,12 @@ license that can be found in the LICENSE file.
     </div>
     
     <script>
-      document.addEventListener('polymer-ready', function() {
-        document.querySelector('#cards').addEventListener(
-          'at-core-card-swipe-away', function(e) {
-            e.target.parentNode.removeChild(e.target);
-          });
-      })
+        
+        HTMLImports.whenReady(function() {
+            document.querySelector('#cards').addEventListener('at-core-card-swipe-away', function(e) { 
+                e.target.parentNode.removeChild(e.target);
+            });
+        })
     </script>
   </body>
 </html>

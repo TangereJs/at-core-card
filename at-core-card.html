@@ -4,8 +4,10 @@ Use of this source code is governed by a BSD-style
 license that can be found in the LICENSE file.
 -->
 <link rel="import" href="../polymer/polymer.html">
-<!--<link rel="import" href="../at-core-theme/at-core-theme.html">-->
-<dom-module id="at-core-card" on-trackstart="{{trackStart}}" on-track="{{track}}" on-trackend="{{trackEnd}}" on-flick="{{flick}}">
+<link rel="import" href="../at-core-theme/at-core-theme.html">
+<link rel="import" href="../polymer-gestures/polymer-gestures.html">
+<!--<dom-module id="at-core-card" on-trackstart="{{trackStart}}" on-track="{{track}}" on-trackend="{{trackEnd}}" on-flick="{{flick}}">-->
+<dom-module id="at-core-card">
     <style>
         :host {
           background-color: #fff;
@@ -26,7 +28,7 @@ license that can be found in the LICENSE file.
         }
     </style>
     <template>
-        <!--<at-core-theme></at-core-theme>-->
+        <at-core-theme></at-core-theme>
         <content></content>
     </template>
 </dom-module>
@@ -70,14 +72,23 @@ license that can be found in the LICENSE file.
       },
       ready: function () {          
           //Quickfix that needs to be replaced by commented code after property->observer issue is resolved
-          //this.setAttribute('touch-action', 'pan-y');          
+          ////this.setAttribute('touch-action', 'pan-y');          
+          //this.setAttribute('touch-action', 'none');
           //this.transitionEndListener = this.transitionEnd.bind(this);
           
           if(!this.transitionEndListener)
           {
-              this.setAttribute('touch-action', 'pan-y');
+              //this.setAttribute('touch-action', 'pan-y');
+              this.setAttribute('touch-action', 'none');
               this.transitionEndListener = this.transitionEnd.bind(this);
           }
+          
+          PolymerGestures.addEventListener(this, "trackstart", this.trackStart);
+          PolymerGestures.addEventListener(this, "track", this.track);
+          PolymerGestures.addEventListener(this, "trackend", this.trackEnd);
+          
+          // flick still not supported
+          //PolymerGestures.addEventListener(this, "flick", this.flick);
       },
       leftView: function () {
           if (this.removing) {
@@ -96,7 +107,8 @@ license that can be found in the LICENSE file.
           //Quickfix that needs to be removed after property->observer issue is resolved
           if(!this.transitionEndListener)
           {
-              this.setAttribute('touch-action', 'pan-y');
+              //this.setAttribute('touch-action', 'pan-y');
+              this.setAttribute('touch-action', 'none');
               this.transitionEndListener = this.transitionEnd.bind(this);
           }
           
@@ -133,16 +145,15 @@ license that can be found in the LICENSE file.
       },
       trackEnd: function (e) {
           if (this.swipeable) {
-              this.swipeEnd(Math.abs(e.dx) > this.w / 2 && e.dx * e.xDirection > 0,
-                  e.dx > 0);
+              this.swipeEnd(Math.abs(e.dx) > this.w / 2 && e.dx * e.xDirection > 0, e.dx > 0);
           }
       },
-      flick: function (e) {
+      /*flick: function (e) {
           if (this.swipeable && !this.away) {
               var v = e.xVelocity;
               this.swipeEnd(Math.abs(v) > 2, v > 0);
           }
-      },
+      },*/
       swipeEnd: function (away, dir) {
           this.classList.remove('dragging');
           this.away = away;
