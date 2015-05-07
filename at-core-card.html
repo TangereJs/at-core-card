@@ -1,7 +1,5 @@
-
 <link rel="import" href="../polymer/polymer.html">
-<link rel="import" href="../polymer-gestures/polymer-gestures.html">
-<!--<dom-module id="at-core-card" on-trackstart="{{trackStart}}" on-track="{{track}}" on-trackend="{{trackEnd}}" on-flick="{{flick}}">-->
+
 <dom-module id="at-core-card">
     <style>
         :host {
@@ -9,18 +7,16 @@
           border-radius: 2px;
           box-shadow: rgba(0, 0, 0, 0.098) 0px 2px 4px, rgba(0, 0, 0, 0.098) 0px 0px 3px;
           /* transition */
-          -webkit-transition: all 0.30s ease-out;
-          transition: all 0.30s ease-out;
+          -webkit-transition: all 0.20s ease-out;
+          transition: all 0.20s ease-out;
         }
 
-        :host(.dark-shadow:host) {
-          box-shadow: rgba(0, 0, 0, 0.14902) 0px 2px 4px, rgba(0, 0, 0, 0.14902) 0px 0px 3px;
-        }
-
-        :host(.dragging:host) {
+        .dragging {
           -webkit-transition: none;
           transition: none;
+          cursor: move !important;
         }
+
     </style>
     <template>        
         <content></content>
@@ -65,26 +61,20 @@
             value: 1.2
           }
       },
+      listeners: {
+        track: 'track'
+      },
       ready: function () {          
-          //Quickfix that needs to be replaced by commented code after property->observer issue is resolved
-          ////this.setAttribute('touch-action', 'pan-y');          
-          //this.setAttribute('touch-action', 'none');
-          //this.transitionEndListener = this.transitionEnd.bind(this);
-          
+
+        this.setScrollDirection('y');
+
           if(!this.transitionEndListener)
           {
-              this.setAttribute('touch-action', 'pan-y');
+              //this.setAttribute('touch-action', 'pan-y');
               //this.setAttribute('touch-action', 'none');
               this.transitionEndListener = this.transitionEnd.bind(this);
           }
-          
-          PolymerGestures.addEventListener(this, "trackstart", this.trackStart);
-          PolymerGestures.addEventListener(this, "track", this.track);
-          //Polymer.Gestures.add("track", this, this.track);
-          PolymerGestures.addEventListener(this, "trackend", this.trackEnd);
-          
-          // flick still not supported
-          //PolymerGestures.addEventListener(this, "flick", this.flick);
+
       },
       leftView: function () {
           if (this.removing) {
@@ -100,11 +90,9 @@
           this.removeEventListener('transitionend', this.transitionEndListener);
       },
       swipeableChanged: function () {
-          //Quickfix that needs to be removed after property->observer issue is resolved
+          
           if(!this.transitionEndListener)
           {
-              this.setAttribute('touch-action', 'pan-y');
-              //this.setAttribute('touch-action', 'none');
               this.transitionEndListener = this.transitionEnd.bind(this);
           }
           
@@ -121,35 +109,75 @@
           var x1 = Math.max(0, Math.abs(x) - this.w * this.offsetRatio);
           var r = Math.max(0, (w - x1) / w);
           var y = w - Math.sqrt(w * w - x1 * x1);
+          if (isNaN(y)) debugger;
           var deg = (1 - r) * d * 60//90
           s.opacity = r;
           var translate = 'translate3d(' + x + 'px,' + (this.noCurve ? 0 : y) + 'px,0)';
           var rotate = 'rotate(' + deg + 'deg)';
           s.webkitTransform = s.mozTransform = s.msTransform = s.transform = translate + (this.noCurve ? '' : ' ' + rotate);
+          //console.log(translate + (this.noCurve ? '' : ' ' + rotate));
       },
-      trackStart: function (e) {
-          if (this.swipeable) {
-              e.preventTap();
+
+      track: function (e) {
+        
+        switch (e.detail.state) {
+          
+          case "track":
+            if (this.swipeable) {
+
+              if (!this._active) {  // start is sometimes(?) not fired, so we emulate missing start for now
+                this._active = true;
+                this._mode = "";
+                this.w = this.offsetWidth;
+                this.classList.add('dragging');
+                this.style.touchAction = "none";                
+              }
+
+              var r = e.detail;
+              //console.log("x:" + r.x + ", dx:" + r.dx + ", ddx:" + r.ddx + ", dy: " + r.dy );
+
+              // the initial direction decides if it should be a swipe or move action
+              if (this._mode == "") {
+                if (Math.abs(r.dy) > 10) this._mode = "scroll";
+                if (Math.abs(r.dx) > 10) this._mode = "swipe";                
+              }
+              
+              // when scrolling the card will not be swiped
+              this._mode == "scroll" ? this.swipe(0) : this.swipe(e.detail.dx);
+
+              // disable default scroll
+              if (this._mode == "swipe") {
+                e.returnValue = false;
+                e.cancelBubble = true;
+                if (e.preventDefault) {
+                  e.preventDefault();
+                  e.stopPropagation();
+                }
+                return false;
+              }
+            }
+            break;
+
+          case "start":           
+            if (this.swipeable) {
+              this._active = true;
+              this._mode = "";
               this.w = this.offsetWidth;
               this.classList.add('dragging');
-          }
+              this.style.touchAction = "none";              
+            }
+            break;
+            
+          case "end":
+            if (this.swipeable) {
+              this._active = false;
+              this.style.touchAction = "pan-y";              
+              this.swipeEnd(Math.abs(e.detail.dx) > this.w / 2 && Math.abs(e.detail.dx)> 0, e.detail.dx > 0);
+            }
+            break;
+        }
       },
-      track: function (e) {
-          if (this.swipeable) {
-              this.swipe(e.dx);
-          }
-      },
-      trackEnd: function (e) {
-          if (this.swipeable) {
-              this.swipeEnd(Math.abs(e.dx) > this.w / 2 && e.dx * e.xDirection > 0, e.dx > 0);
-          }
-      },
-      /*flick: function (e) {
-          if (this.swipeable && !this.away) {
-              var v = e.xVelocity;
-              this.swipeEnd(Math.abs(v) > 2, v > 0);
-          }
-      },*/
+
       swipeEnd: function (away, dir) {
           this.classList.remove('dragging');
           this.away = away;
