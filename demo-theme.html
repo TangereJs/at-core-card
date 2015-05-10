@@ -1,0 +1,107 @@
+<!doctype html>
+<!--
+Copyright 2013 The Polymer Authors. All rights reserved.
+Use of this source code is governed by a BSD-style
+license that can be found in the LICENSE file.
+-->
+<html>
+
+<head>
+  <title>Cards</title>
+
+  <script src="../webcomponentsjs/webcomponents-lite.js"></script>
+  <link rel="import" href="../Tangere/Tangere.html">
+  <link rel="import" href="../at-core-theme/at-core-theme.html">
+  <link rel="import" href="../layout/layout.html">
+  <link rel="import" href="../at-carbon-icon/at-carbon-icon.html">
+  <link rel="import" href="at-core-card.html">
+
+  <style>
+    at-core-card {
+      display: block;
+      width: 320px;
+      margin: 20px;
+    }
+  </style>
+</head>
+<!--<body unresolved>-->
+
+<body>
+  <at-core-theme></at-core-theme>
+  <div id="cards">
+    <at-core-card>
+      <div class="ui card">
+        <div class="content">
+          <div class="header">Elliot Fu</div>
+          <div class="meta">Friend</div>
+          <div class="description">
+            Elliot Fu is a film-maker from New York.
+          </div>
+        </div>
+      </div>
+    </at-core-card>
+
+    <at-core-card>
+      <div class="ui card">
+        <div class="content">
+          <div class="header">Veronika Ossi</div>
+          <div class="description">
+            Veronika Ossi is a set designer living in New York who enjoys kittens, music, and partying.
+          </div>
+        </div>
+        <div class="footer">
+          <a href="#" class=" horizontal layout center">
+            <at-carbon-icon icon="now:home"></at-carbon-icon>
+            Add Friend</a>
+        </div>
+      </div>
+    </at-core-card>
+
+    <at-core-card>
+      <div class="ui card">
+        <div class="content">
+          <i class="right floated like icon"></i>
+          <i class="right floated star icon"></i>
+          <div class="header">Cute Dog</div>
+          <div class="description">
+            Veronika Ossi is a set designer living in New York who enjoys kittens, music, and partying
+          </div>
+        </div>
+        <div class="extra content">
+          <span class="left floated like"><i class="like icon"></i>Like</span>
+          <span class="right floated star"><i class="star icon"></i>Favorite</span>
+        </div>
+      </div>
+    </at-core-card>
+
+    <at-core-card>
+      <div class="ui card">
+      </div>
+    </at-core-card>
+
+    <at-core-card>
+      <div class="ui card">
+      </div>
+    </at-core-card>
+
+    <at-core-card>
+      <div class="ui card">
+      </div>
+    </at-core-card>
+
+
+  </div>
+
+
+
+
+  <script>
+    HTMLImports.whenReady(function () {
+      document.querySelector('#cards').addEventListener('at-core-card-swipe-away', function (e) {
+        e.target.parentNode.removeChild(e.target);
+      });
+    })
+  </script>
+</body>
+
+</html>
