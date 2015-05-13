@@ -134,7 +134,8 @@
               }
 
               var r = e.detail;
-              //console.log("x:" + r.x + ", dx:" + r.dx + ", ddx:" + r.ddx + ", dy: " + r.dy );
+              //console.log("x:" + r.x + ", dx:" + r.dx + ", ddx:" + r.ddx + ", dy: " + r.dy + " mode: " + this._mode);
+
 
               // the initial direction decides if it should be a swipe or move action
               if (this._mode == "") {
@@ -143,16 +144,19 @@
               }
               
               // when scrolling the card will not be swiped
-              this._mode == "scroll" ? this.swipe(0) : this.swipe(e.detail.dx);
+              if (this._mode == "swipe") {
+                this.swipe(e.detail.dx);
+              } else {
+                this.swipe(0);
+              }
 
               // disable default scroll
-              if (this._mode == "swipe") {
+              if (this._mode == "swipe") {                
                 e.returnValue = false;
-                e.cancelBubble = true;
-                if (e.preventDefault) {
+                e.cancelBubble = true;               
                   e.preventDefault();
                   e.stopPropagation();
-                }
+                
                 return false;
               }
             }
