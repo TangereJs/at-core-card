@@ -108,9 +108,11 @@
           var w = this.w * this.widthRatio;
           var x1 = Math.max(0, Math.abs(x) - this.w * this.offsetRatio);
           var r = Math.max(0, (w - x1) / w);
+          if (x1 > w) x1 = w - 1; // avoid overflow when swiping to far
           var y = w - Math.sqrt(w * w - x1 * x1);
+          //console.log("d:" + d + ", w " + w + ", x1 " + x1 + ", r " + r + ", y " + y);
           if (isNaN(y)) debugger;
-          var deg = (1 - r) * d * 60//90
+          var deg = (1 - r) * d * 60; //90
           s.opacity = r;
           var translate = 'translate3d(' + x + 'px,' + (this.noCurve ? 0 : y) + 'px,0)';
           var rotate = 'rotate(' + deg + 'deg)';
