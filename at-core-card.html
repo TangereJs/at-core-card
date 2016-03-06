@@ -198,7 +198,7 @@
       transitionEnd: function (e) {
           if (this.away) {
               this.removing = true;
-              this.fire('at-core-card-swipe-away', { cardId: this.id, dir: this.direction });
+              this.fire('at-core-card-swipe-away', { id: this.id, dir: this.direction });
           }
       }
   });
