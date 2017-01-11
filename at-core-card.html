@@ -1,4 +1,4 @@
-<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../tangere/tangere.html">
 
 <dom-module id="at-core-card">
     <style>
@@ -19,7 +19,7 @@
         }
 
     </style>
-    <template>        
+    <template>
         <content></content>
     </template>
 </dom-module>
@@ -33,7 +33,7 @@
        * @type boolean
        * @default false
        */
-      
+
       properties: {
         removing: {
                 type: Boolean,
@@ -64,7 +64,7 @@
       listeners: {
         track: 'track'
       },
-      ready: function () {          
+      ready: function () {
 
         this.setScrollDirection('y');
 
@@ -90,12 +90,12 @@
           this.removeEventListener('transitionend', this.transitionEndListener);
       },
       swipeableChanged: function () {
-          
+
           if(!this.transitionEndListener)
           {
               this.transitionEndListener = this.transitionEnd.bind(this);
           }
-          
+
           if (this.swipeable) {
               this.addListeners();
           } else {
@@ -121,9 +121,9 @@
       },
 
       track: function (e) {
-        
+
         switch (e.detail.state) {
-          
+
           case "track":
             if (this.swipeable) {
 
@@ -132,7 +132,7 @@
                 this._mode = "";
                 this.w = this.offsetWidth;
                 this.classList.add('dragging');
-                this.style.touchAction = "none";                
+                this.style.touchAction = "none";
               }
 
               var r = e.detail;
@@ -142,9 +142,9 @@
               // the initial direction decides if it should be a swipe or move action
               if (this._mode == "") {
                 if (Math.abs(r.dy) > 10) this._mode = "scroll";
-                if (Math.abs(r.dx) > 10) this._mode = "swipe";                
+                if (Math.abs(r.dx) > 10) this._mode = "swipe";
               }
-              
+
               // when scrolling the card will not be swiped
               if (this._mode == "swipe") {
                 this.swipe(e.detail.dx);
@@ -153,31 +153,31 @@
               }
 
               // disable default scroll
-              if (this._mode == "swipe") {                
+              if (this._mode == "swipe") {
                 e.returnValue = false;
-                e.cancelBubble = true;               
+                e.cancelBubble = true;
                   e.preventDefault();
                   e.stopPropagation();
-                
+
                 return false;
               }
             }
             break;
 
-          case "start":           
+          case "start":
             if (this.swipeable) {
               this._active = true;
               this._mode = "";
               this.w = this.offsetWidth;
               this.classList.add('dragging');
-              this.style.touchAction = "none";              
+              this.style.touchAction = "none";
             }
             break;
-            
+
           case "end":
             if (this.swipeable) {
               this._active = false;
-              this.style.touchAction = "pan-y";              
+              this.style.touchAction = "pan-y";
               this.swipeEnd(Math.abs(e.detail.dx) > this.w / 2 && Math.abs(e.detail.dx)> 0, e.detail.dx > 0);
             }
             break;

@@ -1,9 +1,4 @@
 <!doctype html>
-<!--
-Copyright 2013 The Polymer Authors. All rights reserved.
-Use of this source code is governed by a BSD-style
-license that can be found in the LICENSE file.
--->
 <html>
   <head>
     <title>Cards</title>
@@ -18,7 +13,7 @@ license that can be found in the LICENSE file.
         -webkit-user-select: none;
         -moz-user-select: none;
       }
-      
+
       at-core-card {
         display: block;
         height: 200px;
@@ -37,11 +32,11 @@ license that can be found in the LICENSE file.
       <at-core-card swipeable="true">Swipe Me!</at-core-card>
       <at-core-card></at-core-card>
     </div>
-    
+
     <script>
-        
+
         HTMLImports.whenReady(function() {
-            document.querySelector('#cards').addEventListener('at-core-card-swipe-away', function(e) { 
+            document.querySelector('#cards').addEventListener('at-core-card-swipe-away', function(e) {
                 e.target.parentNode.removeChild(e.target);
             });
         })
