@@ -3,9 +3,9 @@
   "version": "1.0.0.16",
   "private": true,
   "dependencies": {
-    "tangere": "TangereJs/tangere#0.8-preview",
-    "at-carbon-icon": "TangereJs/at-carbon-icon#0.8-preview",
-    "at-carbon-clamp": "TangereJs/at-carbon-clamp#0.8-preview",
+    "tangere": "TangereJs/tangere#master",
+    "at-carbon-icon": "TangereJs/at-carbon-icon#master",
+    "at-carbon-clamp": "TangereJs/at-carbon-clamp#master",
     "layout": "PolymerElements/layout#master"
   }
 }
