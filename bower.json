@@ -6,6 +6,6 @@
     "tangere": "TangereJs/tangere#0.8-preview",
     "at-carbon-icon": "TangereJs/at-carbon-icon#0.8-preview",
     "at-carbon-clamp": "TangereJs/at-carbon-clamp#0.8-preview",
-    "layout": "PolymerElements/layout#master"
+    "layout": "Polymer/layout#master"
   }
 }
