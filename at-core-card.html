@@ -185,20 +185,37 @@
       },
 
       swipeEnd: function (away, dir) {
+          //console.log("at-core-card swipeEnd");
           this.classList.remove('dragging');
           this.away = away;
           if (away) {
+              this._fired = false;
               this.direction = dir ? "right" : "left";
               var w = this.w * this.widthRatio;
               this.swipe(dir ? w : -w);
+
+              // on iphone transitionEnd is sometimes(?) not fired, so ensure here that event is triggered in that case as well
+              this.async(function () {
+                if (!this._fired) {
+                  //console.log("at-core-card fire swipeEnd");
+                  this._fired = true;
+                  this.fire('at-core-card-swipe-away', { id: this.id, dir: this.direction });
+                }
+              },100);
+
           } else {
               this.swipe(0);
           }
       },
       transitionEnd: function (e) {
+        console.log("at-core-card transitionEnd");
           if (this.away) {
-              this.removing = true;
+            this.removing = true;
+            if (!this._fired) {
+              this._fired = true;
+              //console.log("at-core-card fire transitionEnd");
               this.fire('at-core-card-swipe-away', { id: this.id, dir: this.direction });
+            }
           }
       }
   });
