@@ -1,45 +1,38 @@
 <!doctype html>
 <html>
-  <head>
-    <title>Cards</title>
-    <meta name="viewport" content="width=device-width" />
-    <script src="../webcomponentsjs/webcomponents.js"></script>
-    <link rel="import" href="at-core-card.html">
-    <style>
-      #cards {
-        margin: 0 auto;
-        background: #eee;
-        overflow: auto;
-        -webkit-user-select: none;
-        -moz-user-select: none;
-      }
 
-      at-core-card {
-        display: block;
-        height: 200px;
-        width: 240px;
-        margin: 20px auto;
-        padding: 30px;
-      }
-    </style>
-  </head>
-  <!--<body unresolved>-->
-  <body>
-    <div id="cards">
-      <at-core-card swipeable="true">Swipe Me!</at-core-card>
-      <at-core-card swipeable="true">Swipe Me!</at-core-card>
-      <at-core-card></at-core-card>
-      <at-core-card swipeable="true">Swipe Me!</at-core-card>
-      <at-core-card></at-core-card>
-    </div>
+<head>
+  <title>Cards</title>
+  <meta name="viewport" content="width=device-width" />
+  <script src="../webcomponentsjs/webcomponents-lite.js"></script>
+  <link rel="import" href="at-core-card-demo-element.html">
 
-    <script>
+  <style>
+  .debug * {
+    border: 1px solid violet;
+  }
 
-        HTMLImports.whenReady(function() {
-            document.querySelector('#cards').addEventListener('at-core-card-swipe-away', function(e) {
-                e.target.parentNode.removeChild(e.target);
-            });
-        })
-    </script>
-  </body>
+  .container {
+    margin: 0 25% 0 25%;
+  }
+
+  at-core-card-demo-element {
+    margin: 2px 0;
+  }
+  </style>
+</head>
+
+<body class="debug">
+  <div class="container">
+    <at-core-card-demo-element class="first"></at-core-card-demo-element>
+    <at-core-card-demo-element class="second"></at-core-card-demo-element>
+    <at-core-card-demo-element class="third"></at-core-card-demo-element>
+    <at-core-card-demo-element class="fourth"></at-core-card-demo-element>
+    <at-core-card-demo-element class="fifth"></at-core-card-demo-element>
+  </div>
+
+  <script>
+  </script>
+</body>
+
 </html>
