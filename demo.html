@@ -20,17 +20,37 @@
         width: 240px;
         margin: 20px auto;
         padding: 30px;
+
+        background: indigo;
+      }
+
+      .card-content {
+        height: 140px;
+        width: 180px;
+        padding: 30px;
+        box-sizing: border-box;
+        background: yellow;
       }
     </style>
   </head>
   <!--<body unresolved>-->
   <body>
     <div id="cards">
-      <at-core-card swipeable="true">Swipe Me!</at-core-card>
-      <at-core-card swipeable="true">Swipe Me!</at-core-card>
-      <at-core-card></at-core-card>
-      <at-core-card swipeable="true">Swipe Me!</at-core-card>
-      <at-core-card></at-core-card>
+      <at-core-card swipeable="true">
+        <div class="card-content">Swipe Me!</div>
+      </at-core-card>
+      <at-core-card swipeable="true" left-icon="now:about" left-icon-color="orange" right-icon="now:about-filled" right-icon-color="pink">
+        <div class="card-content">Swipe Me!</div>
+      </at-core-card>
+      <at-core-card>
+        <div class="card-content">You can't swipe me!</div>
+      </at-core-card>
+      <at-core-card swipeable="true" left-icon="now:ambulance" left-icon-color="teal" right-icon="now:alert" right-icon-color="purple">
+        <div class="card-content">Swipe Me!</div>
+      </at-core-card>
+      <at-core-card>
+        <div class="card-content">You can't swipe me!</div>
+      </at-core-card>
     </div>
 
     <script>
