@@ -1,6 +1,6 @@
 <link rel="import" href="../tangere/tangere.html">
 <link rel="import" href="swipe-action.html" />
-<link rel="import" href="../at-carbon-icon-color/at-carbon-icon-color.html" />
+<link rel="import" href="../at-carbon-icon/at-carbon-icon.html" />
 
 
 <!-- 
@@ -35,10 +35,11 @@
         }
 
         .left-action {
+          background: blue;
         }
 
         .right-action {
-          
+          background: red;
         }
 
         .left-action-icon {          
@@ -62,10 +63,10 @@
       <swipe-action id="swipeAction" gesture-disabled="[[!swipeable]]">
         <content></content>
         <div swipe-left-action on-tap="onActionTaped" class="right-action" swipe-size="30" swipe-rubber-band="50">
-          <at-carbon-icon-color icon="[[rightIcon]]" color="[[rightIconColor]]" class="right-action-icon"></at-carbon-icon-color>
+          <at-carbon-icon icon="[[rightIcon]]" class="right-action-icon"></at-carbon-icon>
         </div>
         <div swipe-right-action on-tap="onActionTaped" class="left-action" swipe-size="30" swipe-rubber-band="50">
-          <at-carbon-icon-color icon="[[leftIcon]]" color="[[leftIconColor]]" class="left-action-icon"></at-carbon-icon-color>
+          <at-carbon-icon icon="[[leftIcon]]" class="left-action-icon"></at-carbon-icon>
         </div>
       </swipe-action>
     </template>
@@ -97,27 +98,11 @@
         },
 
         /** 
-         * class name for color from at-carbon-icon-color for left action icon
-         */
-        leftIconColor: {
-          type: String,
-          value: "blue"
-        },
-
-        /** 
          * now:icon string for action on the right
          */
         rightIcon: {
           type: String,
           value: "now:trash"
-        },
-
-        /** 
-         * class name for color from at-carbon-icon-color for right action icon
-         */
-        rightIconColor: {
-          type: String,
-          value: "red"
         },
 
         removing: {
