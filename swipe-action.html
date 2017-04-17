@@ -1,6 +1,6 @@
 <link rel="import" href="../tangere/tangere.html" />
 <link rel="import" href="../iron-resizable-behavior/iron-resizable-behavior.html">
-<link rel="import" href="mutation-observer-behavior.html">
+
 <!--
 A Polymer element providing a declarative way to swipe DOM elements, display underlay while doing so and trigger some action when the swiping is done.
 Integrates seamlessly with the &lt;iron-list&gt; element.
@@ -331,8 +331,7 @@ Attribute | Description | Default
       },
 
       behaviors: [
-        Polymer.IronResizableBehavior,
-        Polymer.MutationObserverBehavior
+        Polymer.IronResizableBehavior
       ],
 
       listeners: {
@@ -341,16 +340,6 @@ Attribute | Description | Default
       },
 
       ready: function() {
-        // mutation observer setup
-        this._mutationOptions = {childList: true, subtree: true, attributes: true, characterData: false,
-          attributeFilter: this._ACTIONS_CONFIG.map(
-            function(config) {return config.attr;})
-        };
-        this._mutationFilter = function(mutation) {
-          return this._mutationIsChildList(mutation, this.$.actions) ||
-            this._mutationIsChildAttributes(mutation, this.$.actions);
-        };
-
         this.target = this.$.swipeTarget;
         this.listen(this.target, 'track', '_onTrack');
         this.listen(this.target, 'transitionend', '_onTransitionEnd');
@@ -420,7 +409,6 @@ Attribute | Description | Default
 
       _onActivatedActionIdChange: function(newValue, oldValue) {
         if (!this._activatedActionIdAlreadyChanged) {
-          this._mutationObserverPaused = true;
           this._mute = 1;
           if (!newValue) {
             this._mute++;
@@ -522,7 +510,6 @@ Attribute | Description | Default
       },
 
       _swipeStart: function(e) {
-        this._mutationObserverPaused = true;
         // Set the swipe axis when starting: it must not change once set for the current swipe
         this._gesture = {axis: Math.abs(e.detail.dx) > Math.abs(e.detail.dy) ? 'x' : 'y'};
         var oppositeAxis = this._gesture.axis ==='x' ? 'y' : 'x';
@@ -703,7 +690,6 @@ Attribute | Description | Default
         this.target.style.transition = '';
         this.target.style.willChange = '';
         this._gesture = undefined;
-        this._mutationObserverPaused = false;
         this._setIsSwipedAway(!!action);
         this._setIsSwiping(false);
       },
