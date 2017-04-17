@@ -1,6 +1,6 @@
 <link rel="import" href="../tangere/tangere.html">
 <link rel="import" href="swipe-action.html" />
-<link rel="import" href="../at-carbon-icon/at-carbon-icon.html" />
+<link rel="import" href="../at-carbon-icon-color/at-carbon-icon-color.html" />
 
 
 <!-- 
@@ -35,38 +35,69 @@
         }
 
         .left-action {
-          background: blue;
+
         }
 
         .right-action {
-          background: red;
+
         }
 
-        .left-action-icon {          
-          position: absolute;
-          top: 50%;
-          transform: translateY(-50%);
-          width: 30px;
+        .up-action {
+
+        }
+
+        .down-action {
+
+        }
+
+        .action-icon {
+          position: absolute;          
+          padding: 8px;
+          width: 32px;
+          height: 32px;
+        }
+
+        .action-icon.align-left {
           left: 0;
-        }
-
-        .right-action-icon {
-          position: absolute;
           top: 50%;
           transform: translateY(-50%);
-          width: 30px;
+        }
+
+        .action-icon.align-right {
+          top: 50%;
+          transform: translateY(-50%);
           right: 0;
+        }
+
+        .action-icon.align-top {
+          top: 0;
+          left: 50%;
+          transform: translateX(-50%);
+        }
+
+        .action-icon.align-bottom {
+          bottom: 0;
+          left: 50%;
+          transform: translateX(-50%);
         }
     </style>
 
     <template>
       <swipe-action id="swipeAction" gesture-disabled="[[!swipeable]]">
         <content></content>
-        <div swipe-left-action on-tap="onActionTaped" class="right-action" swipe-size="30" swipe-rubber-band="50">
-          <at-carbon-icon icon="[[rightIcon]]" class="right-action-icon"></at-carbon-icon>
+        <div swipe-left-action disabled$="[[!rightIcon]]" on-tap="onActionTaped" class="right-action" swipe-size="48" swipe-rubber-band="60">
+          <at-carbon-icon-color icon="[[rightIcon]]" color="[[rightIconColor]]" class="action-icon align-right"></at-carbon-icon-color>
         </div>
-        <div swipe-right-action on-tap="onActionTaped" class="left-action" swipe-size="30" swipe-rubber-band="50">
-          <at-carbon-icon icon="[[leftIcon]]" class="left-action-icon"></at-carbon-icon>
+        <div swipe-right-action disabled$="[[!leftIcon]]" on-tap="onActionTaped" class="left-action" swipe-size="48" swipe-rubber-band="60">
+          <at-carbon-icon-color icon="[[leftIcon]]" color="[[leftIconColor]]" class="action-icon align-left"></at-carbon-icon-color>
+        </div>
+
+        <div swipe-up-action disabled$="[[!bottomIcon]]" on-tap="onActionTaped" class="up-action" swipe-size="48" swipe-rubber-band="60">
+          <at-carbon-icon-color icon="[[bottomIcon]]" color="[[bottomIconColor]]" class="action-icon align-bottom"></at-carbon-icon-color>
+        </div>
+
+        <div swipe-down-action disabled$="[[!topIcon]]" on-tap="onActionTaped" class="down-action" swipe-size="48" swipe-rubber-band="60">
+          <at-carbon-icon-color icon="[[topIcon]]" color="[[topIconColor]]" class="action-icon align-top"></at-carbon-icon-color>
         </div>
       </swipe-action>
     </template>
@@ -94,7 +125,12 @@
          */
         leftIcon: {
           type: String,
-          value: "now:clock"
+          value: ""
+        },
+
+        leftIconColor: {
+          type: String,
+          value: ""
         },
 
         /** 
@@ -102,8 +138,64 @@
          */
         rightIcon: {
           type: String,
-          value: "now:trash"
+          value: ""
         },
+
+        rightIconColor: {
+          type: String,
+          value: ""
+        },
+
+        /** 
+         * now:icon string for action on the top
+         */
+        topIcon: {
+          type: String,
+          value: ""
+        },
+
+        topIconColor: {
+          type: String,
+          value: ""
+        },
+
+        /** 
+         * now:icon string for action on the bottom
+         */
+        bottomIcon: {
+          type: String,
+          value: ""
+        },
+
+        bottomIconColor: {
+          type: String,
+          value: ""
+        },
+
+        colorLeft: {
+          type: String,
+          value: "",
+          observer: "_colorLeftChanged"
+        },
+        
+        colorRight: {
+          type: String,
+          value: "",
+          observer: "_colorRightChanged"
+        },
+
+        colorTop: {
+          type: String,
+          value: "",
+          observer: "_colorTopChanged"
+        },
+        
+        colorBottom: {
+          type: String,
+          value: "",
+          observer: "_colorBottomChanged"
+        },
+
 
         removing: {
           type: Boolean,
@@ -146,6 +238,35 @@
           }
 
       },
+
+      _colorLeftChanged: function (newValue, oldValue) {
+        var swipeRightAction = this.$.swipeAction.querySelector('div[swipe-right-action]');
+        if(swipeRightAction) {
+          swipeRightAction.style['background-color'] = newValue;
+        }
+      },
+
+      _colorRightChanged: function (newValue, oldValue) {
+        var swipeLeftAction = this.$.swipeAction.querySelector('div[swipe-left-action]');
+        if (swipeLeftAction) {
+          swipeLeftAction.style['background-color'] = newValue;
+        }
+      },
+
+      _colorTopChanged: function (newValue, oldValue) {
+        var swipeBottomAction = this.$.swipeAction.querySelector('div[swipe-down-action]');
+        if (swipeBottomAction) {
+          swipeBottomAction.style['background-color'] = newValue;
+        }
+      },
+
+      _colorBottomChanged: function (newValue, oldValue) {
+        var swipeTopAction = this.$.swipeAction.querySelector('div[swipe-up-action]');
+        if (swipeTopAction) {
+          swipeTopAction.style['background-color'] = newValue;
+        }
+      },
+
       leftView: function () {
           if (this.removing) {
               this.removeListeners();

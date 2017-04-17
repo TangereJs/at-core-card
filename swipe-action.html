@@ -127,7 +127,7 @@ Attribute | Description | Default
     /**
      * Helper object describing an action to be triggered by a swipe gesture.
      */
-    var Action = function(id, node, size, requestedSize, rubberBand, fade, maxRubberBandReached, axis, direction) {
+    var Action = function(id, node, size, requestedSize, rubberBand, fade, maxRubberBandReached, axis, direction, disabled) {
       this.id = id;
       this.node = node;
       this.size = size;
@@ -137,6 +137,7 @@ Attribute | Description | Default
       this.maxRubberBandReached = maxRubberBandReached;
       this.axis = axis;
       this.direction = direction;
+      this.disabled = disabled;
     };
     Action.prototype = {
       constructor: Action,
@@ -148,7 +149,8 @@ Attribute | Description | Default
       fade: false,
       maxRubberBandReached: false,
       axis: 'x',
-      direction: 1
+      direction: 1,
+      disabled: false
     };
 
     'use strict';
@@ -458,6 +460,7 @@ Attribute | Description | Default
         var sizeAttr = Number(actionNode.getAttribute('swipe-size')) || null;
         var fadeAttr = actionNode.getAttribute('swipe-fade');
         var rubberBandAttr = Number(actionNode.getAttribute('swipe-rubber-band'));
+        var disabledAttr = actionNode.getAttribute('disabled');
         return new Action(
           actionId,
           actionNode,
@@ -467,7 +470,8 @@ Attribute | Description | Default
           fadeAttr || fadeAttr === '',
           false,
           (actionId === Polymer.SwipeAction.ACTION_UP || actionId === Polymer.SwipeAction.ACTION_DOWN) ? 'y' : 'x',
-          (actionId === Polymer.SwipeAction.ACTION_LEFT || actionId === Polymer.SwipeAction.ACTION_UP) ? -1 : 1);
+          (actionId === Polymer.SwipeAction.ACTION_LEFT || actionId === Polymer.SwipeAction.ACTION_UP) ? -1 : 1,
+          disabledAttr !== null);
       },
 
       _getActionId: function(axis, direction) {
@@ -520,7 +524,7 @@ Attribute | Description | Default
         // Prevent the swipe if one of the following conditions is met:
         // - no swipe action is found for the gesture 
         // - the gesture is diagonal (this is most likely a weird scroll gesture)
-        var validateSwipe = this._currentAction &&
+        var validateSwipe = this._currentAction && !this._currentAction.disabled &&
           Math.abs(e.detail['d' + oppositeAxis]) <= this._OPPOSITE_AXIS_MAX_SCROLLING_THREASHOLD;
         this._setIsSwiping(validateSwipe);
         if (!validateSwipe) {
