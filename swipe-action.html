@@ -510,6 +510,9 @@ Attribute | Description | Default
               }
               break;
           }
+        } else if (!this.gestureDisabled) {
+          // *ij* if card is already swipped away we reset it
+          this.reset(true);
         }
       },
 
