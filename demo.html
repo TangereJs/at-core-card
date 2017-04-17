@@ -6,19 +6,20 @@
     <script src="../webcomponentsjs/webcomponents.js"></script>
     <link rel="import" href="at-core-card.html">
     <style>
-      #cards {
-        margin: 0 auto;
+      body {
+        margin: 0;
+      }
+
+      .cards-container {
+        padding: 2px;
         background: #eee;
-        overflow: auto;
         -webkit-user-select: none;
         -moz-user-select: none;
       }
 
-      at-core-card {
-        display: block;
-        height: 200px;
+      .card-container {
+        margin: 12px auto;        
         width: 240px;
-        margin: 20px auto;
       }
 
       .card-content {
@@ -35,40 +36,49 @@
   </head>
   <!--<body unresolved>-->
   <body>
-    <div id="cards">
-      <at-core-card swipeable="true" 
-        left-icon="now:clock" left-icon-color="orange" color-left="blue" 
-        right-icon="now:trash" right-icon-color="teal" color-right="red"        
-      >
-        <div class="card-content">Swipe Me!</div>
-      </at-core-card>
-      <at-core-card swipeable="true" 
-        top-icon="now:about" top-icon-color="orange" color-top="blue"
-        bottom-icon="now:about-filled" bottom-icon-color="teal" color-bottom="red"
-      >
-        <div class="card-content">Swipe Me!</div>
-      </at-core-card>
-      <at-core-card>
-        <div class="card-content">You can't swipe me!</div>
-      </at-core-card>
-      <at-core-card swipeable="true" 
-        left-icon="now:ambulance" color-left="blue" 
-        right-icon="now:alert" color-right="red"
-      >
-        <div class="card-content">Swipe Me!</div>
-      </at-core-card>
-      <at-core-card>
-        <div class="card-content">You can't swipe me!</div>
-      </at-core-card>
+    <div class="cards-container">
+      <div class="card-container">
+        <at-core-card swipeable="true" 
+          left-icon="now:clock" left-icon-color="orange" color-left="blue" 
+          right-icon="now:trash" right-icon-color="teal" color-right="red"        
+        >
+          <div class="card-content">Swipe Me!</div>
+        </at-core-card>      
+      </div>
+      <div class="card-container">
+        <at-core-card swipeable="true" 
+          top-icon="now:about" top-icon-color="orange" color-top="blue"
+          bottom-icon="now:about-filled" bottom-icon-color="teal" color-bottom="red"
+        >
+          <div class="card-content">Swipe Me!</div>
+        </at-core-card>      
+      </div>
+      <div class="card-container">
+        <at-core-card>
+          <div class="card-content">You can't swipe me!</div>
+        </at-core-card>      
+      </div>
+      <div class="card-container">
+        <at-core-card swipeable="true" 
+          left-icon="now:ambulance" color-left="blue" 
+          right-icon="now:alert" color-right="red"
+        >
+          <div class="card-content">Swipe Me!</div>
+        </at-core-card>      
+      </div>
+      <div class="card-container">
+        <at-core-card>
+          <div class="card-content">You can't swipe me!</div>
+        </at-core-card>
+      </div>
     </div>
 
     <script>
+      document.addEventListener('WebComponentsReady', function(){
 
-        HTMLImports.whenReady(function() {
-            document.querySelector('#cards').addEventListener('at-core-card-swipe-away', function(e) {
-                e.target.parentNode.removeChild(e.target);
-            });
-        })
+
+
+      });
     </script>
   </body>
 </html>

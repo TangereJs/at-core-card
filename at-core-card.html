@@ -230,13 +230,28 @@
 
         this.setScrollDirection('y');
 
-          if(!this.transitionEndListener)
-          {
-              //this.setAttribute('touch-action', 'pan-y');
-              //this.setAttribute('touch-action', 'none');
-              this.transitionEndListener = this.transitionEnd.bind(this);
-          }
+        if(!this.transitionEndListener)
+        {
+          //this.setAttribute('touch-action', 'pan-y');
+          //this.setAttribute('touch-action', 'none');
+          this.transitionEndListener = this.transitionEnd.bind(this);
+        }
+      },
 
+      attached: function () {
+        // *ij* following code sets card size to be the size of the content
+        // this can not be done automatically since 
+        // 1. swipe-action has position relative; height: 100%
+        // 2. all swipe actions have position: absolute; height: 100%
+        // 3. #swipeTarget has position: absolute; height: 100%
+        // So, we get the first child of swipeTarget, calculate its bounding client rect
+        // and set width and height of at-core-card to that of swipeTarget's client rect
+        // width and height
+        var firstChild = this.$.swipeAction.$.swipeTarget.children[0];
+        var fcBoundingRect = firstChild.getBoundingClientRect();
+
+        this.style.width = fcBoundingRect.width + 'px';
+        this.style.height = fcBoundingRect.height + 'px';
       },
 
       _colorLeftChanged: function (newValue, oldValue) {
