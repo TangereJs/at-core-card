@@ -32,51 +32,115 @@
         vertical-align: middle;
         line-height: 200px;
       }
+
+      .card-content p {
+        line-height: 100px;
+        margin: 0;
+      }
+
+      .echo {
+        margin: 0 0 0 60%;
+      }
     </style>
   </head>
   <!--<body unresolved>-->
   <body>
     <div class="cards-container">
       <div class="card-container">
-        <at-core-card swipeable="true" 
+        <at-core-card id="allDirectionsDemo" swipeable="true" 
+          left-icon="now:ambulance" color-left="blue" 
+          right-icon="now:alert" color-right="red"
+          top-icon="now:birthday" top-icon-color="black" color-top="yellow" 
+          bottom-icon="now:calendar" color-bottom="purple"
+        >
+          <div class="card-content">
+            <p>Swipe Me!</p>
+            <p>in all directions</p>
+           </div>
+        </at-core-card>      
+      </div>
+      <div id="allDirectionsDemoEcho" class="echo"></div>
+      <div class="card-container">
+        <at-core-card id="leftRightDemo" swipeable="true" 
           left-icon="now:clock" left-icon-color="orange" color-left="blue" 
           right-icon="now:trash" right-icon-color="teal" color-right="red"        
         >
-          <div class="card-content">Swipe Me!</div>
+          <div class="card-content">
+            <p>Swipe Me!</p>
+            <p>left or right</p>
+          </div>
         </at-core-card>      
       </div>
+      <div id="leftRightDemoEcho" class="echo"></div>
       <div class="card-container">
-        <at-core-card swipeable="true" 
+        <at-core-card id="topBottomDemo" swipeable="true" 
           top-icon="now:about" top-icon-color="orange" color-top="blue"
           bottom-icon="now:about-filled" bottom-icon-color="teal" color-bottom="red"
         >
-          <div class="card-content">Swipe Me!</div>
+          <div class="card-content">
+            <p>Swipe Me!</p>
+            <p>up or down</p>
+          </div>
         </at-core-card>      
       </div>
+      <div id="topBottomDemoEcho" class="echo"></div>
       <div class="card-container">
         <at-core-card>
           <div class="card-content">You can't swipe me!</div>
         </at-core-card>      
-      </div>
-      <div class="card-container">
-        <at-core-card swipeable="true" 
-          left-icon="now:ambulance" color-left="blue" 
-          right-icon="now:alert" color-right="red"
-        >
-          <div class="card-content">Swipe Me!</div>
-        </at-core-card>      
-      </div>
-      <div class="card-container">
-        <at-core-card>
-          <div class="card-content">You can't swipe me!</div>
-        </at-core-card>
       </div>
     </div>
 
     <script>
-      document.addEventListener('WebComponentsReady', function(){
 
+      document.addEventListener('WebComponentsReady', function() {
+        var allDirectionsDemoEcho = document.getElementById('allDirectionsDemoEcho');
 
+        var allDirectionsDemo = document.getElementById('allDirectionsDemo');
+        allDirectionsDemo.addEventListener('swipe-left', function(event) {
+          allDirectionsDemoEcho.textContent = "swipe left happened";
+        });
+        allDirectionsDemo.addEventListener('swipe-right', function(event) {
+          allDirectionsDemoEcho.textContent = "swipe right happened";        
+        });
+        allDirectionsDemo.addEventListener('swipe-top', function (event) {
+          allDirectionsDemoEcho.textContent = "swipe top happened";          
+        });
+        allDirectionsDemo.addEventListener('swipe-bottom', function(event) {
+          allDirectionsDemoEcho.textContent = "swipe bottom happened";
+        });
+
+        var leftRightDemoEcho = document.getElementById('leftRightDemoEcho');
+
+        var leftRightDemo = document.getElementById('leftRightDemo');
+        leftRightDemo.addEventListener('swipe-left', function(event) {
+          leftRightDemoEcho.textContent = "swipe left happened";
+        });
+        leftRightDemo.addEventListener('swipe-right', function(event) {
+          leftRightDemoEcho.textContent = "swipe right happened";        
+        });
+        leftRightDemo.addEventListener('swipe-top', function (event) {
+          leftRightDemoEcho.textContent = "swipe top happened";          
+        });
+        leftRightDemo.addEventListener('swipe-bottom', function(event) {
+          leftRightDemoEcho.textContent = "swipe bottom happened";
+        });        
+
+        var topBottomDemoEcho = document.getElementById('topBottomDemoEcho');
+
+        var topBottomDemo = document.getElementById('topBottomDemo');
+        topBottomDemo.addEventListener('swipe-left', function(event) {
+          topBottomDemoEcho.textContent = "swipe left happened";
+        });
+        topBottomDemo.addEventListener('swipe-right', function(event) {
+          topBottomDemoEcho.textContent = "swipe right happened";        
+        });
+        topBottomDemo.addEventListener('swipe-top', function (event) {
+          topBottomDemoEcho.textContent = "swipe top happened";          
+        });
+        topBottomDemo.addEventListener('swipe-bottom', function(event) {
+          topBottomDemoEcho.textContent = "swipe bottom happened";
+        });
 
       });
     </script>

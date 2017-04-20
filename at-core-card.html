@@ -83,7 +83,7 @@
     </style>
 
     <template>
-      <swipe-action id="swipeAction" gesture-disabled="[[!swipeable]]">
+      <swipe-action id="swipeAction" gesture-disabled="[[!swipeable]]" on-swiped-away="onSwipedAway" swipe-threshold="[[swipeThreshold]]">
         <content></content>
         <div swipe-left-action disabled$="[[!rightIcon]]" on-tap="onActionTaped" class="right-action" swipe-size="48" swipe-rubber-band="60">
           <at-carbon-icon-color icon="[[rightIcon]]" color="[[rightIconColor]]" class="action-icon align-right"></at-carbon-icon-color>
@@ -196,6 +196,18 @@
           observer: "_colorBottomChanged"
         },
 
+        /**
+         * If card is swipped for more than swipeThreshold % of its width
+         * action defined for that swipe will be executed
+         * 
+         * @property swipeThreshold
+         * @type Number
+         * @default 75
+         */
+        swipeThreshold: {
+          type: Number,
+          value: 75
+        },
 
         removing: {
           type: Boolean,
@@ -222,8 +234,18 @@
         // track: 'track'
       },
 
-      onActionTaped: function (event) {
+      onActionTaped: function (event) {        
         this.$.swipeAction.reset(true);
+      },
+
+      onSwipedAway: function (event) {
+        var actionId = event.detail.action.id;
+
+        // swipeLeft, swipeRight, swipeTop, swipeBottom
+        if (actionId === "up") actionId = "top";
+        if (actionId === "down") actionId = "bottom";
+        var actionName = "swipe-" + actionId;
+        this.fire(actionName, {}, { bubbles: false });
       },
 
       ready: function () {

@@ -147,11 +147,17 @@ Attribute | Description | Default
       requestedSize: undefined,
       rubberBand: false,
       fade: false,
+      overThreshold: false,
       maxRubberBandReached: false,
       axis: 'x',
       direction: 1,
       disabled: false
     };
+
+    function getElementSize(element, axis) {
+      var clientRect = element.getBoundingClientRect();
+      return axis === "x" ? clientRect.width : clientRect.height;
+    }
 
     'use strict';
 
@@ -292,6 +298,19 @@ Attribute | Description | Default
           value: undefined,
           notify: true,
           observer: '_onActivatedActionIdChange'
+        },
+
+        /**
+         * If card is swipped for more than swipeThreshold % of its width
+         * action defined for that swipe will be executed
+         * 
+         * @property swipeThreshold
+         * @type Number
+         * @default 75
+         */
+        swipeThreshold: {
+          type: Number,
+          vaule: 75
         },
 
         _SWIPE_SPEED_THREASHOLD: {
@@ -538,7 +557,7 @@ Attribute | Description | Default
         this._applyGestureTranslation(e.detail['d' + this._gesture.axis], this._gesture.axis);
       },
 
-      _swipeUpdate: function(e) {
+      _swipeUpdate: function(e) {        
         var newSwipingDirection = this._getSwipingDirection(e, this._gesture.axis);
         var track = e.detail['d' + this._gesture.axis];
         // If the swiping direction changes, the action to display may also have changed
@@ -555,8 +574,15 @@ Attribute | Description | Default
         // Translate
         this._applyGestureTranslation(track, this._gesture.axis);
         // Fade it as well if it is required
+
+        var size = getElementSize(this, this._currentAction.axis);
+        var fCalcThreshold = Math.abs(track) / size;
+        this._currentAction.overThreshold = fCalcThreshold*100 > this.swipeThreshold;
+
         if (this._currentAction.fade) {
           this.target.style.opacity = 1 - (Math.abs(track) / this._currentAction.size);
+        } else if (this._currentAction.overThreshold) {
+          this.target.style.opacity = Math.max(1 - (fCalcThreshold - 0.75), 0);
         }
       },
 
@@ -576,7 +602,7 @@ Attribute | Description | Default
           transition += 'ms linear';
         }
         // Slide all the way off (left/right) if we're 50% total size
-        else if (absTranslation >= this._currentAction.size / 2) {
+        else if (absTranslation >= this._currentAction.size / 2) {        
           transition = this._SWIPE_TRANSITION;
         }
         // Swipe not confirmed, the swipe target should snap back
@@ -608,11 +634,17 @@ Attribute | Description | Default
         this.target.style.transition = transition;
         this._willBeSwipedAway = true;
         // Apply CSS transformations
-        if (action.fade) {
+        if (action.fade || action.overThreshold) {
           Polymer.dom(this.target).classList.add('fade');
         }
+
+        var actionSize = action.size;
+        if (action.overThreshold) {
+          actionSize = getElementSize(this, action.axis);
+        }
+
         Polymer.Base.transform(
-          this._getTranslate3d(action.direction * action.size, action.axis),
+          this._getTranslate3d(action.direction * actionSize, action.axis),
           this.target);
 
         // If there we don't transition, the end handler won't run, so let's handle the cleanup now
@@ -652,6 +684,16 @@ Attribute | Description | Default
           this._changeActivatedAction(this._currentAction);
           // Fire activation event
           this._fireEvent('swiped-away');
+
+          if (this._currentAction.overThreshold) {
+            var actionId = this._currentAction.id;
+            var selector = "[swipe-" + actionId + "-action]";
+            var element = this.querySelector(selector);
+            if (element) {
+              var tapEvent = new CustomEvent('tap');
+              element.dispatchEvent(tapEvent);
+            }            
+          }
           return;
         }
         // If the target node won't be swiped away, then it will be snaped back,
