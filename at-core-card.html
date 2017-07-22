@@ -3,13 +3,15 @@
 <dom-module id="at-core-card">
     <style>
         :host {
+          /* should be only applied by container 
           background-color: #fff;
           border-radius: 2px;
-          box-shadow: rgba(0, 0, 0, 0.098) 0px 2px 4px, rgba(0, 0, 0, 0.098) 0px 0px 3px;
-          /* transition */
+          box-shadow: rgba(0, 0, 0, 0.098) 0px 2px 4px, rgba(0, 0, 0, 0.098) 0px 0px 3px;         
           -webkit-transition: all 0.20s ease-out;
           transition: all 0.20s ease-out;
+          */
           display: block;
+
         }
 
         .dragging {
@@ -19,7 +21,7 @@
         }
 
     </style>
-    <template>
+    <template>     
         <content></content>
     </template>
 </dom-module>

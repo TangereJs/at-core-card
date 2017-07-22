@@ -1,6 +1,6 @@
 {
   "name": "at-core-card",
-  "version": "1.0.0.22",
+  "version": "1.0.0.33",
   "private": true,
   "dependencies": {
     "tangere": "TangereJs/tangere#master",
