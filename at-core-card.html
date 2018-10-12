@@ -1,224 +1,221 @@
 <link rel="import" href="../tangere/tangere.html">
 
 <dom-module id="at-core-card">
+  <template>
     <style>
-        :host {
-          /* should be only applied by container 
+      :host {
+        /* should be only applied by container 
           background-color: #fff;
           border-radius: 2px;
           box-shadow: rgba(0, 0, 0, 0.098) 0px 2px 4px, rgba(0, 0, 0, 0.098) 0px 0px 3px;         
           -webkit-transition: all 0.20s ease-out;
           transition: all 0.20s ease-out;
           */
-          display: block;
+        display: block;
 
-        }
+      }
 
-        .dragging {
-          -webkit-transition: none;
-          transition: none;
-          cursor: move !important;
-        }
-
+      .dragging {
+        -webkit-transition: none;
+        transition: none;
+        cursor: move !important;
+      }
     </style>
-    <template>     
-        <content></content>
-    </template>
+    <slot></slot>
+  </template>
 </dom-module>
 <script>
   Polymer({
-      is: "at-core-card",
-      /**
-       * If true, the card can be swiped.
-       *
-       * @attribute swipeable
-       * @type boolean
-       * @default false
-       */
+    is: "at-core-card",
+    /**
+     * If true, the card can be swiped.
+     *
+     * @attribute swipeable
+     * @type boolean
+     * @default false
+     */
 
-      properties: {
-        removing: {
-                type: Boolean,
-                value: true
-            },
-          swipeable: {
-            type: Boolean,
-            observer: 'swipeableChanged',
-            value: false
-          },
-          noCurve: {
-            type: Boolean,
-            value: true
-          },
-          sort: {
-            type: String,
-            value: ""
-            },
-          offsetRatio: {
-            type: Number,
-            value: 0.2
-          },
-          widthRatio: {
-            type: Number,
-            value: 1.2
-          }
+    properties: {
+      removing: {
+        type: Boolean,
+        value: true
       },
-      listeners: {
-        track: 'track'
+      swipeable: {
+        type: Boolean,
+        observer: 'swipeableChanged',
+        value: false
       },
-      ready: function () {
+      noCurve: {
+        type: Boolean,
+        value: true
+      },
+      sort: {
+        type: String,
+        value: ""
+      },
+      offsetRatio: {
+        type: Number,
+        value: 0.2
+      },
+      widthRatio: {
+        type: Number,
+        value: 1.2
+      }
+    },
+    listeners: {
+      track: 'track'
+    },
+    ready: function() {
 
-        this.setScrollDirection('y');
+      this.setScrollDirection('y');
 
-          if(!this.transitionEndListener)
-          {
-              //this.setAttribute('touch-action', 'pan-y');
-              //this.setAttribute('touch-action', 'none');
-              this.transitionEndListener = this.transitionEnd.bind(this);
-          }
+      if (!this.transitionEndListener) {
+        //this.setAttribute('touch-action', 'pan-y');
+        //this.setAttribute('touch-action', 'none');
+        this.transitionEndListener = this.transitionEnd.bind(this);
+      }
 
-      },
-      leftView: function () {
-          if (this.removing) {
-              this.removeListeners();
-          }
-      },
-      addListeners: function () {
-          this.addEventListener('webkitTransitionEnd', this.transitionEndListener);
-          this.addEventListener('transitionend', this.transitionEndListener);
-      },
-      removeListeners: function () {
-          this.removeEventListener('webkitTransitionEnd', this.transitionEndListener);
-          this.removeEventListener('transitionend', this.transitionEndListener);
-      },
-      swipeableChanged: function () {
+    },
+    leftView: function() {
+      if (this.removing) {
+        this.removeListeners();
+      }
+    },
+    addListeners: function() {
+      this.addEventListener('webkitTransitionEnd', this.transitionEndListener);
+      this.addEventListener('transitionend', this.transitionEndListener);
+    },
+    removeListeners: function() {
+      this.removeEventListener('webkitTransitionEnd', this.transitionEndListener);
+      this.removeEventListener('transitionend', this.transitionEndListener);
+    },
+    swipeableChanged: function() {
 
-          if(!this.transitionEndListener)
-          {
-              this.transitionEndListener = this.transitionEnd.bind(this);
-          }
+      if (!this.transitionEndListener) {
+        this.transitionEndListener = this.transitionEnd.bind(this);
+      }
 
+      if (this.swipeable) {
+        this.addListeners();
+      } else {
+        this.removeListeners();
+      }
+    },
+    swipe: function(x) {
+      var s = this.style;
+      var d = x > 0 ? 1 : -1;
+      var w = this.w * this.widthRatio;
+      var x1 = Math.max(0, Math.abs(x) - this.w * this.offsetRatio);
+      var r = Math.max(0, (w - x1) / w);
+      if (x1 > w) x1 = w - 1; // avoid overflow when swiping to far
+      var y = w - Math.sqrt(w * w - x1 * x1);
+      //console.log("d:" + d + ", w " + w + ", x1 " + x1 + ", r " + r + ", y " + y);
+      if (isNaN(y)) debugger;
+      var deg = (1 - r) * d * 60; //90
+      s.opacity = r;
+      var translate = 'translate3d(' + x + 'px,' + (this.noCurve ? 0 : y) + 'px,0)';
+      var rotate = 'rotate(' + deg + 'deg)';
+      s.webkitTransform = s.mozTransform = s.msTransform = s.transform = translate + (this.noCurve ? '' : ' ' + rotate);
+      //console.log(translate + (this.noCurve ? '' : ' ' + rotate));
+    },
+
+    track: function(e) {
+
+      switch (e.detail.state) {
+
+        case "track":
           if (this.swipeable) {
-              this.addListeners();
-          } else {
-              this.removeListeners();
-          }
-      },
-      swipe: function (x) {
-          var s = this.style;
-          var d = x > 0 ? 1 : -1;
-          var w = this.w * this.widthRatio;
-          var x1 = Math.max(0, Math.abs(x) - this.w * this.offsetRatio);
-          var r = Math.max(0, (w - x1) / w);
-          if (x1 > w) x1 = w - 1; // avoid overflow when swiping to far
-          var y = w - Math.sqrt(w * w - x1 * x1);
-          //console.log("d:" + d + ", w " + w + ", x1 " + x1 + ", r " + r + ", y " + y);
-          if (isNaN(y)) debugger;
-          var deg = (1 - r) * d * 60; //90
-          s.opacity = r;
-          var translate = 'translate3d(' + x + 'px,' + (this.noCurve ? 0 : y) + 'px,0)';
-          var rotate = 'rotate(' + deg + 'deg)';
-          s.webkitTransform = s.mozTransform = s.msTransform = s.transform = translate + (this.noCurve ? '' : ' ' + rotate);
-          //console.log(translate + (this.noCurve ? '' : ' ' + rotate));
-      },
 
-      track: function (e) {
-
-        switch (e.detail.state) {
-
-          case "track":
-            if (this.swipeable) {
-
-              if (!this._active) {  // start is sometimes(?) not fired, so we emulate missing start for now
-                this._active = true;
-                this._mode = "";
-                this.w = this.offsetWidth;
-                this.classList.add('dragging');
-                this.style.touchAction = "none";
-              }
-
-              var r = e.detail;
-              //console.log("x:" + r.x + ", dx:" + r.dx + ", ddx:" + r.ddx + ", dy: " + r.dy + " mode: " + this._mode);
-
-
-              // the initial direction decides if it should be a swipe or move action
-              if (this._mode == "") {
-                if (Math.abs(r.dy) > 10) this._mode = "scroll";
-                if (Math.abs(r.dx) > 10) this._mode = "swipe";
-              }
-
-              // when scrolling the card will not be swiped
-              if (this._mode == "swipe") {
-                this.swipe(e.detail.dx);
-              } else {
-                this.swipe(0);
-              }
-
-              // disable default scroll
-              if (this._mode == "swipe") {
-                e.returnValue = false;
-                e.cancelBubble = true;
-                  e.preventDefault();
-                  e.stopPropagation();
-
-                return false;
-              }
-            }
-            break;
-
-          case "start":
-            if (this.swipeable) {
+            if (!this._active) {  // start is sometimes(?) not fired, so we emulate missing start for now
               this._active = true;
               this._mode = "";
               this.w = this.offsetWidth;
               this.classList.add('dragging');
               this.style.touchAction = "none";
             }
-            break;
 
-          case "end":
-            if (this.swipeable) {
-              this._active = false;
-              this.style.touchAction = "pan-y";
-              this.swipeEnd(Math.abs(e.detail.dx) > this.w / 2 && Math.abs(e.detail.dx)> 0, e.detail.dx > 0);
+            var r = e.detail;
+            //console.log("x:" + r.x + ", dx:" + r.dx + ", ddx:" + r.ddx + ", dy: " + r.dy + " mode: " + this._mode);
+
+
+            // the initial direction decides if it should be a swipe or move action
+            if (this._mode == "") {
+              if (Math.abs(r.dy) > 10) this._mode = "scroll";
+              if (Math.abs(r.dx) > 10) this._mode = "swipe";
             }
-            break;
-        }
-      },
 
-      swipeEnd: function (away, dir) {
-          //console.log("at-core-card swipeEnd");
-          this.classList.remove('dragging');
-          this.away = away;
-          if (away) {
-              this._fired = false;
-              this.direction = dir ? "right" : "left";
-              var w = this.w * this.widthRatio;
-              this.swipe(dir ? w : -w);
-
-              // on iphone transitionEnd is sometimes(?) not fired, so ensure here that event is triggered in that case as well
-              this.async(function () {
-                if (!this._fired) {
-                  //console.log("at-core-card fire swipeEnd");
-                  this._fired = true;
-                  this.fire('at-core-card-swipe-away', { id: this.id, dir: this.direction });
-                }
-              },100);
-
-          } else {
+            // when scrolling the card will not be swiped
+            if (this._mode == "swipe") {
+              this.swipe(e.detail.dx);
+            } else {
               this.swipe(0);
-          }
-      },
-      transitionEnd: function (e) {
-        console.log("at-core-card transitionEnd");
-          if (this.away) {
-            this.removing = true;
-            if (!this._fired) {
-              this._fired = true;
-              //console.log("at-core-card fire transitionEnd");
-              this.fire('at-core-card-swipe-away', { id: this.id, dir: this.direction });
+            }
+
+            // disable default scroll
+            if (this._mode == "swipe") {
+              e.returnValue = false;
+              e.cancelBubble = true;
+              e.preventDefault();
+              e.stopPropagation();
+
+              return false;
             }
           }
+          break;
+
+        case "start":
+          if (this.swipeable) {
+            this._active = true;
+            this._mode = "";
+            this.w = this.offsetWidth;
+            this.classList.add('dragging');
+            this.style.touchAction = "none";
+          }
+          break;
+
+        case "end":
+          if (this.swipeable) {
+            this._active = false;
+            this.style.touchAction = "pan-y";
+            this.swipeEnd(Math.abs(e.detail.dx) > this.w / 2 && Math.abs(e.detail.dx) > 0, e.detail.dx > 0);
+          }
+          break;
       }
+    },
+
+    swipeEnd: function(away, dir) {
+      //console.log("at-core-card swipeEnd");
+      this.classList.remove('dragging');
+      this.away = away;
+      if (away) {
+        this._fired = false;
+        this.direction = dir ? "right" : "left";
+        var w = this.w * this.widthRatio;
+        this.swipe(dir ? w : -w);
+
+        // on iphone transitionEnd is sometimes(?) not fired, so ensure here that event is triggered in that case as well
+        this.async(function() {
+          if (!this._fired) {
+            //console.log("at-core-card fire swipeEnd");
+            this._fired = true;
+            this.fire('at-core-card-swipe-away', { id: this.id, dir: this.direction });
+          }
+        }, 100);
+
+      } else {
+        this.swipe(0);
+      }
+    },
+    transitionEnd: function(e) {
+      console.log("at-core-card transitionEnd");
+      if (this.away) {
+        this.removing = true;
+        if (!this._fired) {
+          this._fired = true;
+          //console.log("at-core-card fire transitionEnd");
+          this.fire('at-core-card-swipe-away', { id: this.id, dir: this.direction });
+        }
+      }
+    }
   });
 </script>
