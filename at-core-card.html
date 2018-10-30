@@ -95,7 +95,7 @@
         this.transitionEndListener = this.transitionEnd.bind(this);
       }
 
-      if (this.swipeable) {
+      if (this.swipeable && Tangere.session.browser.mobile) {
         this.addListeners();
       } else {
         this.removeListeners();
@@ -124,7 +124,7 @@
       switch (e.detail.state) {
 
         case "track":
-          if (this.swipeable) {
+          if (this.swipeable && Tangere.session.browser.mobile) {
 
             if (!this._active) {  // start is sometimes(?) not fired, so we emulate missing start for now
               this._active = true;
@@ -164,7 +164,7 @@
           break;
 
         case "start":
-          if (this.swipeable) {
+          if (this.swipeable && Tangere.session.browser.mobile) {
             this._active = true;
             this._mode = "";
             this.w = this.offsetWidth;
@@ -174,7 +174,7 @@
           break;
 
         case "end":
-          if (this.swipeable) {
+          if (this.swipeable && Tangere.session.browser.mobile) {
             this._active = false;
             this.style.touchAction = "pan-y";
             this.swipeEnd(Math.abs(e.detail.dx) > this.w / 2 && Math.abs(e.detail.dx) > 0, e.detail.dx > 0);
